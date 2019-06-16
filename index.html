@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>MAP699</title>
+
+    <!-- Bootsrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/cerulean/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-C++cugH8+Uf86JbNOnQoBweHHAe/wVKN/mb0lTybu/NZ9sEYbd+BbbYtNpWYAsNP" crossorigin="anonymous">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+
+    <!-- Leaflet clustermarker -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+
+    <!-- Font Awesome -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+    <style>
+        #map {
+            width: 100%;
+            height: calc(40vh);
+        }
+
+        #about {
+            max-height: calc(80vh);
+            overflow-y: scroll;
+        }
+
+        .leaflet-popup-content h3 {
+            font-family: "MetSans", serif;
+            font-size: 1.5em;
+            margin-bottom: 6px;
+            color: #00273E;
+        }
+
+        .leaflet-container a {
+            color: #0105fe;
+        }
+
+        /* Small devices (landscape phones, 576px and up) */
+        @media (min-width: 576px) {}
+
+        /* Medium devices (tablets, 768px and up) */
+        @media (min-width: 768px) {
+            #map {
+                height: calc(60vh);
+            }
+        }
+
+        /* Large devices (desktops, 992px and up) */
+        @media (min-width: 992px) {
+            #map {
+                height: calc(80vh);
+            }
+        }
+
+        /* Extra large devices (large desktops, 1200px and up) */
+        @media (min-width: 1200px) {}
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <header class="row py-3 bg-dark text-white text-center">
+            <div class="col mx-2">
+                <h1 class="h1">The Geography of Public Domain Objects at THE METROPOLITAN MUSEUM OF ART</h1>
+            </div>
+        </header>
+
+        <section class="row bg-secondary">
+            <div class="col-12 col-md-7 col-lg-8 px-0">
+                <div id="map" class="bg-light position-relative"></div>
+            </div>
+
+            <aside id="about" class="col-12 col-md-5 col-lg-4 text-dark py-2">
+                <section>
+                    <h2 class="h2 text-dark">How to use this map</h2>
+                    <p>Use the Layer selection button to the left to view the locations of art from a specific
+                        Department or Time Period.</p>
+                    <p>Zoom in and click on a marker to view the object here:</p>
+                    <img class="img-fluid" src=""><br>
+                    <p>All the objects featured here are in the public domain and can be used freely without copyright
+                        infringement.  These public domain objects represent a sub-set of the database where the 
+                        attributes contained geographic information on both city and country.</p>
+                    <a id="image-download" target="_blank" class="btn btn-danger" role="button" href="" download="proposed_file_name">Download
+                        the High-Resolution Image</a>
+                    <p>For additional information about a selected object, click on the object's "Title" in the popup to 
+                        visit the object's page on the The Met's website.  </p>
+                    <p>
+                        <ul class="list-inline">
+                            <li>Datasources: </li>
+                            <li><a href="https://github.com/metmuseum">The Metropolitan Museum of Art's Open Access
+                                Initiative</a></li>
+                            <li><a href="https://simplemaps.com/data/world-cities">simplemaps World Cities Database</a>
+                        </ul>
+                    </p>
+                </section>
+            </aside>
+        </section>
+
+        <!-- Footer -->
+        <footer class="row bg-dark text-muted py-3">
+            <!-- Grid column -->
+            <div class="col mx-2">
+                <ul class="list-unstyled">
+                    <li>author: digitalfootprints</li>
+                    <li>last updated: June 11, 2019</li>
+                </ul>
+            </div>
+        </footer>
+    </div> <!-- end .container-fluid -->
+
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous">
+        </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.0.min.js"></script>
+
+    <!-- Load Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous">
+        </script>
+
+    <!-- Load Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous">
+        </script>
+
+    <!-- Load Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+        crossorigin=""></script>
+
+    <!-- Load D3 -->
+    <script src="https://d3js.org/d3.v5.js"></script>
+
+    <!-- Load Leaflet clustermarker -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
+    <script>
+        // create Leaflet map
+        var map = L.map('map').setView([0, 0], 2);
+
+        // add legend control layers - global variable with (null, null) allows indiv basemaps and overlays to be added inside functions below
+        var controlLayers = L.control.layers(null, null, {
+            position: "topright",
+            collapsed: true // false = open by default, true=open on hover
+        }).addTo(map);
+
+
+        /* BASELAYERS */
+
+        // add basemaps
+        var Esri_WorldImagery = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            }).addTo(map);
+        controlLayers.addBaseLayer(Esri_WorldImagery, 'Imagery basemap (ESRI)');
+
+        var lightAll = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+        }).addTo(map); // adds layer by default
+        controlLayers.addBaseLayer(lightAll, 'Gray basemap (Carto)');
+
+        // request data
+        d3.json('data/merge.json').then(drawMap);
+
+        function getImageInfo(imgId) {
+
+            return $.getJSON('https://collectionapi.metmuseum.org/public/collection/v1/objects/' + imgId);
+
+        }
+
+        var path = getImageInfo(34);
+        // console.log(path['responseJSON'])
+
+
+
+        function drawMap(data) {
+
+
+
+            // use GeoJSON data to create Leaflet circleMarkers and cluster them 
+            var clusterGroup = L.markerClusterGroup();
+            var points = L.geoJson(data, {
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng
+                        // , {radius: 3}
+                    )
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='tabname' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+
+            clusterGroup.addLayer(points);
+            map.addLayer(clusterGroup);
+            controlLayers.addOverlay(clusterGroup, 'All Objects');
+
+
+            // Filter objects by Department American Decorative Arts
+            var adclusterGroup = L.markerClusterGroup();
+            var ad = L.geoJson(data, {
+                filter: function (feature, layer) {
+                    return feature.properties.Department === "American Decorative Arts";
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 4
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            adclusterGroup.addLayer(ad);
+            controlLayers.addOverlay(adclusterGroup, 'American Decorative Arts');
+
+
+            // Filter objects by Department Arts of Africa, Oceania, and the Americas    
+            var aoclusterGroup = L.markerClusterGroup();
+            var ao = L.geoJson(data, {
+                filter: function (feature, layer) {
+                    return feature.properties.Department === "Arts of Africa, Oceania, and the Americas";
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 4
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            aoclusterGroup.addLayer(ao);
+            controlLayers.addOverlay(aoclusterGroup, 'Arts of Africa, Oceania, and the Americas');
+
+
+            // Filter objects by Department Islamic Art 
+            var isclusterGroup = L.markerClusterGroup();
+            var is = L.geoJson(data, {
+                filter: function (feature, layer) {
+                    return feature.properties.Department === "Islamic Art";
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 4
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            isclusterGroup.addLayer(is);
+            controlLayers.addOverlay(isclusterGroup, 'Islamic Art');
+
+
+            // Filter objects by Department Medieval Art 
+            var mdclusterGroup = L.markerClusterGroup();
+            var md = L.geoJson(data, {
+                filter: function (feature, layer) {
+                    return feature.properties.Department === "Medieval Art";
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 4
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            mdclusterGroup.addLayer(md);
+            controlLayers.addOverlay(mdclusterGroup, 'Medieval Art');
+
+
+            // Filter objects by Department Modern and Contemporary Art 
+            var maclusterGroup = L.markerClusterGroup();
+            var ma = L.geoJson(data, {
+                filter: function (feature, layer) {
+                    return feature.properties.Department === "Modern and Contemporary Art";
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 4
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            maclusterGroup.addLayer(ma);
+            controlLayers.addOverlay(maclusterGroup, 'Modern and Contemporary Art');
+
+
+            // Filter objects by Department Musical Instruments 
+            var miclusterGroup = L.markerClusterGroup();
+            var mi = L.geoJson(data, {
+                filter: function (feature, layer) {
+                    return feature.properties.Department === "Musical Instruments";
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 4
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            miclusterGroup.addLayer(mi);
+            controlLayers.addOverlay(miclusterGroup, 'Musical Instruments');
+
+
+            // Filter objects by Department The Cloisters 
+            var clclusterGroup = L.markerClusterGroup();
+            var cl = L.geoJson(data, {
+                filter: function (feature, layer) {
+                    return feature.properties.Department === "The Cloisters";
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 4
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            clclusterGroup.addLayer(cl);
+            controlLayers.addOverlay(clclusterGroup, 'The Cloisters');
+
+
+            // Filter objects by Department The Libraries 
+            var liclusterGroup = L.markerClusterGroup();
+            var li = L.geoJson(data, {
+                filter: function (feature, layer) {
+                    return feature.properties.Department === "The Libraries";
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 4
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            liclusterGroup.addLayer(li);
+            controlLayers.addOverlay(liclusterGroup, 'The Libraries');
+
+
+            // Filter objects by Time Period ObjectBeginDate between -900 through 1
+            var mill0clusterGroup = L.markerClusterGroup();
+            var mill0 = L.geoJson(data, {
+                filter: function mill1Filter(feature, layer) {
+                    return -900 <= feature.properties.ObjectBeginDate && feature.properties
+                        .ObjectBeginDate <= 0;
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 5
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            mill0clusterGroup.addLayer(mill0);
+            controlLayers.addOverlay(mill0clusterGroup, 'Period: 900 BCE - 1 BCE');
+
+
+            // Filter objects by Time Period ObjectBeginDate between 1 through 1000
+            var mill1clusterGroup = L.markerClusterGroup();
+            var mill1 = L.geoJson(data, {
+                filter: function mill1Filter(feature, layer) {
+                    return 1 <= feature.properties.ObjectBeginDate && feature.properties.ObjectBeginDate <=
+                        1000;
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 5
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            mill1clusterGroup.addLayer(mill1);
+            controlLayers.addOverlay(mill1clusterGroup, 'Period: 1 CE - 1000 CE');
+
+
+            // Filter objects by Time Period ObjectBeginDate between 1001 through 1300
+            var mill2clusterGroup = L.markerClusterGroup();
+            var mill2 = L.geoJson(data, {
+                filter: function mill2Filter(feature, layer) {
+                    return 1001 <= feature.properties.ObjectBeginDate && feature.properties
+                        .ObjectBeginDate <= 1300;
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 5
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            mill2clusterGroup.addLayer(mill2);
+            controlLayers.addOverlay(mill2clusterGroup, 'Period: 1001 CE - 1300 CE');
+
+
+            // Filter objects by Time Period ObjectBeginDate between 1301 through 1600
+            var mill3clusterGroup = L.markerClusterGroup();
+            var mill3 = L.geoJson(data, {
+                filter: function mill3Filter(feature, layer) {
+                    return 1301 <= feature.properties.ObjectBeginDate && feature.properties
+                        .ObjectBeginDate <= 1600;
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 5
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            mill3clusterGroup.addLayer(mill3);
+            controlLayers.addOverlay(mill3clusterGroup, 'Period: 1301 CE - 1600 CE');
+
+
+            // Filter objects by Time Period ObjectBeginDate between 1601 through 1859
+            var mill4clusterGroup = L.markerClusterGroup();
+            var mill4 = L.geoJson(data, {
+                filter: function mill4Filter(feature, layer) {
+                    return 1601 <= feature.properties.ObjectBeginDate && feature.properties
+                        .ObjectBeginDate <= 1859;
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 5
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+            mill4clusterGroup.addLayer(mill4);
+            controlLayers.addOverlay(mill4clusterGroup, 'Period: 1601 CE - 1859 CE');
+
+
+            // Filter objects by Time Period ObjectBeginDate between 1860 through Present
+            var mill5clusterGroup = L.markerClusterGroup();
+            var mill5 = L.geoJson(data, {
+                filter: function mill5Filter(feature, layer) {
+                    return 1860 <= feature.properties.ObjectBeginDate && feature.properties
+                        .ObjectBeginDate <= 5000;
+                },
+                pointToLayer: function (point, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 5
+                    })
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "<h3><b>Object Title:   " + "<a href=" + feature.properties.LinkResource +
+                        " download target='_new' rel='noopener noreferrer'>" + feature.properties
+                            .Title + "</a></b><br>" +
+                        "<b>Artist:   </b>" + feature.properties.ArtistDisplayName + "<br>" +
+                        "<b>Department:   </b>" + feature.properties.Department + "<br>" +
+                        "<b>Object Date:   </b>" + feature.properties.ObjectBeginDate + "<br>" +
+                        "<b>Location:   </b>" + feature.properties.City + ", " + feature.properties
+                            .Country + "<br>"
+                    )
+
+                    // when the user clicks on a feature layer
+                    layer.on('click', function () {
+
+                        // get the object ID of the current selection
+                        var objectId = layer.feature.properties.ObjectID;
+
+                        // request the image info
+                        d3.json('https://collectionapi.metmuseum.org/public/collection/v1/objects/' +
+                            objectId).then(function (response) {
+
+                                // you have image data here
+                                console.log(response);
+
+                                // get the path to the small image
+                                var imgPathSmall = response.primaryImageSmall;
+
+                                // replace the image in the .img-fluid div with the new path
+                                d3.select('.img-fluid').attr('src', imgPathSmall);
+
+                                // get the path to the large image
+                                var imgPathLarge = response.primaryImage;
+
+                                // update the download button with correct path for large image
+                                d3.select('#image-download').attr('href', imgPathLarge);
+
+                            })
+
+                    });
+                }
+            });
+
+            mill5clusterGroup.addLayer(mill5);
+            controlLayers.addOverlay(mill5clusterGroup, 'Period: 1860 CE - Present');
+
+        };
+
+        // locate the user, if they choose
+        map.locate({
+            setView: true,
+            maxZoom: 10
+        });
+
+    </script>
+
+</body>
+
+</html>
