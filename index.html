@@ -36,7 +36,7 @@
         }
 
         .leaflet-popup-content h3 {
-            font-family: "MetSans", serif;
+            /* font-family: "MetSans", serif; */
             font-size: 1.5em;
             margin-bottom: 6px;
             color: #00273E;
@@ -83,25 +83,25 @@
                 <div id="map" class="bg-light position-relative"></div>
             </div>
 
-            <aside id="about" class="col-12 col-md-5 col-lg-4 text-dark py-2">
+            <aside id="about" class="text-justify col-12 col-md-5 col-lg-4 text-dark py-2">
                 <section>
-                    <h2 class="h2 text-dark">How to use this map</h2>
-                    <p>Use the Layer selection button to the left to view the locations of art from a specific
+                    <h4 class="text-center text-dark">How to use this map</h2>
+                    <p>Use the 'Layers' selection button on the map to view the location of art from a specific
                         Department or Time Period.</p>
                     <p>Zoom in and click on a marker to view the object here:</p>
                     <img class="img-fluid" src=""><br>
                     <p>All the objects featured here are in the public domain and can be used freely without copyright
-                        infringement.  These public domain objects represent a sub-set of the database where the 
+                        infringement. The public domain images available here represent a sub-set of the database where the
                         attributes contained geographic information on both city and country.</p>
-                    <a id="image-download" target="_blank" class="btn btn-danger" role="button" href="" download="proposed_file_name">Download
-                        the High-Resolution Image</a>
-                    <p>For additional information about a selected object, click on the object's "Title" in the popup to 
-                        visit the object's page on the The Met's website.  </p>
+                    <a id="image-download" target="_blank" class="btn btn-info" role="button" href=""
+                     download="file_name">View/Download the High-Resolution Image</a><br>
+                    <p>For additional information about a selected object, click on the object's "Title" in the popup
+                        to visit the object's page on the The Met's website. </p>
                     <p>
                         <ul class="list-inline">
                             <li>Datasources: </li>
                             <li><a href="https://github.com/metmuseum">The Metropolitan Museum of Art's Open Access
-                                Initiative</a></li>
+                                    Initiative</a></li>
                             <li><a href="https://simplemaps.com/data/world-cities">simplemaps World Cities Database</a>
                         </ul>
                     </p>
@@ -114,8 +114,8 @@
             <!-- Grid column -->
             <div class="col mx-2">
                 <ul class="list-unstyled">
-                    <li>author: digitalfootprints</li>
-                    <li>last updated: June 11, 2019</li>
+                    <li>map designed by: Sharon Wohlgemuth @<a href="https://github.com/digitalfootprints/artmap">digitalfootprints</a></li>
+                    <li>last updated: June 16, 2019</li>
                 </ul>
             </div>
         </footer>
@@ -1051,13 +1051,7 @@
             controlLayers.addOverlay(mill5clusterGroup, 'Period: 1860 CE - Present');
 
         };
-
-        // locate the user, if they choose
-        map.locate({
-            setView: true,
-            maxZoom: 10
-        });
-
+        
     </script>
 
 </body>
