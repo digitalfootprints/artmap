@@ -1,6 +1,6 @@
 # The Metropolitan Museum of Art Collection
 
-## A Spaciotemporal View of Art
+## A Spatiotemporal View of Art
 
 Imagine having access to a world-class collection of art and antiquities at your fingertips, available for your viewing pleasure at any time.  Most of us will never have the means to own museum-quality fine art, but The Metropolitan Museum of Art is providing public access to high-resolution scans and documentation of its collection free of charge, to view on-line from anywhere in the world.  The Museum’s collection, available as an electronic dataset, is currently approaching half a million records, almost a quarter of its over two million total works.  Each object in the dataset has a variety of geographic information available about the artist and the art.  With this information we can see the geographic origination of the Museums asseccions, and changes to the location of origination in the collection over time.
 
