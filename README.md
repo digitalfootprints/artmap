@@ -23,3 +23,5 @@ Users can engage and interact with the map in a variety of ways.   Standard pan 
 The Metropolitan Museum of Art recorded over 7 million visitors in 2017, but most of the world will never enjoy the experience of seeing the collection in person.  However, the museum’s designation of many works of art as public domain, allows the high-resolution scans to be accessed and used without restriction, by everyone.  The use of interactive cartography in conjunction with the museums data and high-resolution scans of the artwork, will allow anyone with a computer and internet connection to experience the artwork through a new and interesting geo-visualization.  
 
 <a href=https://digitalfootprints.github.io/artmap/pandas_profiling/PandasProfiling_Collection.html>View the results of pandas profiling on the full collection dataset</a>
+
+<a href="https://digitalfootprints.github.io/artmap">View the map:  The Geography of Public Domain Objects at THE METROPOLITAN MUSEUM OF ART</a>
